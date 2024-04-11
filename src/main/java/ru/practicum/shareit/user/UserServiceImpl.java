@@ -1,24 +1,15 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserDAO userDAO;
     private final UserMapper userMapper;
-
-    @Autowired
-    public UserServiceImpl(@Qualifier(value = "userMemory") UserDAO storage,
-                           UserMapper mapper) {
-        this.userDAO = storage;
-        this.userMapper = mapper;
-    }
 
     @Override
     public UserDTO findById(Integer id) {

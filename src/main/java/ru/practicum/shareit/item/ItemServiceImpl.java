@@ -1,8 +1,6 @@
 package ru.practicum.shareit.item;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.OwnerValidationException;
 import ru.practicum.shareit.item.dto.ItemDTO;
@@ -12,21 +10,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-@Slf4j
 @Service
+@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemDAO itemDAO;
     private final UserDAO userDAO;
     private final ItemMapper itemMapper;
-
-    @Autowired
-    public ItemServiceImpl(@Qualifier(value = "itemMemory") ItemDAO storage,
-                           @Qualifier(value = "userMemory") UserDAO userDAO,
-                           ItemMapper mapper) {
-        this.itemDAO = storage;
-        this.userDAO = userDAO;
-        this.itemMapper = mapper;
-    }
 
     @Override
     public ItemDTO saveItem(Integer userId, ItemDTO itemDTO) {
