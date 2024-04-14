@@ -1,38 +1,41 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.EmailValidationException;
 
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserDAO userDAO;
     private final UserMapper userMapper;
+    private final UserRepository userRepository;
 
     @Override
     public UserDTO findById(Integer id) {
-        return userMapper.toDTO(userDAO.findById(id)
+        return userMapper.toDTO(userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Пользователь " + id + " не найден")));
     }
 
     @Override
     public List<UserDTO> getAllUsers() {
-        return userMapper.toListDTO(userDAO.findAll());
+        return userMapper.toListDTO(userRepository.findAll());
     }
 
     @Override
     public UserDTO saveUser(UserDTO userDTO) {
-        return userMapper.toDTO(userDAO.save(userMapper.toModel(userDTO)));
+        try {
+            return userMapper.toDTO(userRepository.save(userMapper.toModel(userDTO)));
+        } catch (DataIntegrityViolationException e) {
+            throw new EmailValidationException(userDTO.getEmail() + " данная почта уже используется");
+        }
     }
 
     @Override
     public void delete(Integer id) {
-        boolean deleted = userDAO.delete(id);
-        if (!deleted) {
-            throw new NoSuchElementException("Пользователь " + id + " не найден");
-        }
+        userRepository.deleteById(id);
     }
 
     @Override
@@ -44,6 +47,6 @@ public class UserServiceImpl implements UserService {
         if (userDTO.getName() != null) {
             existedUser.setName(userDTO.getName());
         }
-        return userMapper.toDTO(userDAO.update(userMapper.toModel(existedUser)));
+        return userMapper.toDTO(userRepository.save(userMapper.toModel(existedUser)));
     }
 }
