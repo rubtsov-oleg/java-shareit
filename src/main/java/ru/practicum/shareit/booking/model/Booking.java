@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import ru.practicum.shareit.item.model.Item;
@@ -11,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bookings", schema = "public")
-@Data
+@Getter @Setter @ToString
 @TypeDef(
         name = "pgsql_enum",
         typeClass = PgSQLEnumType.class
@@ -39,4 +41,16 @@ public class Booking {
     @Column(name = "booking_status")
     @Type(type = "pgsql_enum")
     private BookingStatus status;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Booking)) return false;
+        return id != null && id.equals(((Booking) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

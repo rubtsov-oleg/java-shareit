@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDTO;
 import ru.practicum.shareit.booking.dto.BookingOutDTO;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -18,12 +19,14 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public BookingOutDTO saveBooking(Integer userId, BookingDTO bookingDTO) {
         if (bookingDTO.getEnd().isBefore(bookingDTO.getStart())) {
             throw new BookinglValidationException("Дата окончания бронирования не может быть раньше старта");
@@ -44,6 +47,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingOutDTO updateStatus(Integer userId, Integer bookingId, Boolean approved) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NoSuchElementException("Бронь " + bookingId + " не найдена"));

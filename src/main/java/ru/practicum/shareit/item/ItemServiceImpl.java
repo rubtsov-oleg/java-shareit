@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingDTO;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
@@ -34,6 +36,7 @@ public class ItemServiceImpl implements ItemService {
     private final CommentMapper commentMapper;
 
     @Override
+    @Transactional
     public ItemDTO saveItem(Integer userId, ItemDTO itemDTO) {
         itemDTO.setOwnerId(userId);
         return itemMapper.toDTO(itemRepository.save(itemMapper.toModel(itemDTO)));
@@ -59,6 +62,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDTO updateItem(Integer userId, Integer id, ItemDTO itemDTO) {
         ItemDTO existedItem = itemMapper.toDTO(itemRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Вещь " + id + " не найден")));
@@ -117,6 +121,8 @@ public class ItemServiceImpl implements ItemService {
         return output;
     }
 
+    @Override
+    @Transactional
     public CommentDTO createComment(Integer userId, Integer itemId, CommentDTO commentDTO) {
         Item existedItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NoSuchElementException("Вещь " + itemId + " не найдена"));

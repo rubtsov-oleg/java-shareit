@@ -3,11 +3,13 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.EmailValidationException;
 
 import java.util.*;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDTO saveUser(UserDTO userDTO) {
         try {
             return userMapper.toDTO(userRepository.save(userMapper.toModel(userDTO)));
@@ -34,11 +37,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void delete(Integer id) {
         userRepository.deleteById(id);
     }
 
     @Override
+    @Transactional
     public UserDTO updateUser(Integer id, UserDTO userDTO) {
         UserDTO existedUser = findById(id);
         if (userDTO.getEmail() != null) {
