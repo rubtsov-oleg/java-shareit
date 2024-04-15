@@ -1,29 +1,33 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.item.model;
 
+import ru.practicum.shareit.user.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "requests", schema = "public")
+@Table(name = "comments", schema = "public")
 @Getter
 @Setter
 @ToString
-public class ItemRequest {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false)
-    private String description;
+    private String text;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private User requestor;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author_id")
+    private User author;
 
     @Column
     private Instant created = Instant.now();
@@ -31,8 +35,8 @@ public class ItemRequest {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ItemRequest)) return false;
-        return id != null && id.equals(((ItemRequest) o).getId());
+        if (!(o instanceof Comment)) return false;
+        return id != null && id.equals(((Comment) o).getId());
     }
 
     @Override

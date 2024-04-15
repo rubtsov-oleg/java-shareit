@@ -38,12 +38,21 @@ public class ErrorHandler {
         return errors;
     }
 
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(OwnerValidationException.class)
     public Map<String, String> handleOwnerValidationException(OwnerValidationException ex) {
         Map<String, String> errors = new HashMap<>();
         errors.put("error", ex.getMessage());
-        log.info("403 {}", ex.getMessage());
+        log.info("404 {}", ex.getMessage());
+        return errors;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BookinglValidationException.class)
+    public Map<String, String> handleBookinglValidationException(BookinglValidationException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", ex.getMessage());
+        log.info("400 {}", ex.getMessage());
         return errors;
     }
 

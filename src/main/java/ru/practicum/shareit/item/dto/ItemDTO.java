@@ -20,6 +20,6 @@ public class ItemDTO {
     private String description;
     @NotNull(groups = MarkerOfCreate.class, message = "available can`t null!")
     private Boolean available;
-    private Integer owner;
-    private Integer request;
+    private Integer ownerId;
+    private Integer requestId;
 }
