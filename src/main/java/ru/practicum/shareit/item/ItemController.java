@@ -12,6 +12,8 @@ import ru.practicum.shareit.item.dto.ItemDTO;
 import ru.practicum.shareit.item.dto.ItemOutDTO;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Slf4j
@@ -49,18 +51,22 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemOutDTO> findAllByOwner(@RequestHeader("X-Sharer-User-Id") int userId) {
+    public List<ItemOutDTO> findAllByOwner(@RequestHeader("X-Sharer-User-Id") int userId,
+                                           @RequestParam(defaultValue = "0") @Min(value = 0) Integer from,
+                                           @RequestParam(defaultValue = "10") @Positive Integer size) {
         log.info("Получен запрос GET, на получения всех вещей пользователя.");
-        List<ItemOutDTO> itemDTOList = service.findAllByOwner(userId);
+        List<ItemOutDTO> itemDTOList = service.findAllByOwner(userId, from, size);
         log.info("Получен ответ, список вещей, размер: {}", itemDTOList.size());
         return itemDTOList;
     }
 
     @GetMapping("/search")
     public List<ItemOutDTO> search(@RequestParam(required = false) String text,
-                                   @RequestHeader("X-Sharer-User-Id") int userId) {
+                                   @RequestHeader("X-Sharer-User-Id") int userId,
+                                   @RequestParam(defaultValue = "0") @Min(value = 0) Integer from,
+                                   @RequestParam(defaultValue = "10") @Positive Integer size) {
         log.info("Получен запрос GET, на поиск вещей.");
-        List<ItemOutDTO> itemDTOList = service.search(text);
+        List<ItemOutDTO> itemDTOList = service.search(text, from, size);
         log.info("Получен ответ, список вещей, размер: {}", itemDTOList.size());
         return itemDTOList;
     }
