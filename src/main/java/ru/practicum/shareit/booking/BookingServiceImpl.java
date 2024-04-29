@@ -65,8 +65,6 @@ public class BookingServiceImpl implements BookingService {
                 throw new BookinglValidationException("Уже отменено");
             }
             booking.setStatus(BookingStatus.REJECTED);
-        } else {
-            throw new BookinglValidationException("Некорректный статус");
         }
         return bookingMapper.toOutDTO(bookingRepository.save(booking));
     }
