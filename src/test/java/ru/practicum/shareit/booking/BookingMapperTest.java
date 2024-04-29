@@ -41,12 +41,16 @@ class BookingMapperTest {
         booking.setEnd(LocalDateTime.now().plusDays(1));
         booking.setStatus(BookingStatus.WAITING);
         booking.setItem(new Item());
-        booking.setItem(new Item() {{
-            setId(1);
-        }});
-        booking.setBooker(new User() {{
-            setId(1);
-        }});
+        booking.setItem(new Item() {
+            {
+                setId(1);
+            }
+        });
+        booking.setBooker(new User() {
+            {
+                setId(1);
+            }
+        });
 
         BookingDTO bookingDTO = bookingMapper.toDTO(booking);
 
@@ -84,12 +88,16 @@ class BookingMapperTest {
         booking.setStart(LocalDateTime.now());
         booking.setEnd(LocalDateTime.now().plusDays(1));
         booking.setStatus(BookingStatus.WAITING);
-        booking.setItem(new Item() {{
-            setId(1);
-        }});
-        booking.setBooker(new User() {{
-            setId(1);
-        }});
+        booking.setItem(new Item() {
+            {
+                setId(1);
+            }
+        });
+        booking.setBooker(new User() {
+            {
+                setId(1);
+            }
+        });
 
         BookingOutDTO bookingOutDTO = bookingMapper.toOutDTO(booking);
 
