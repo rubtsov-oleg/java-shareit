@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -82,18 +83,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemOutDTO> findAllByOwner(Integer id) {
+    public List<ItemOutDTO> findAllByOwner(Integer id, Integer from, Integer size) {
         User owner = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Пользователь " + id + " не найден"));
-        return bookingEnrichment(itemRepository.findAllByOwnerOrderByIdAsc(owner));
+        return bookingEnrichment(itemRepository
+                .findAllByOwnerOrderByIdAsc(owner, PageRequest.of(from / size, size)).getContent());
     }
 
     @Override
-    public List<ItemOutDTO> search(String text) {
+    public List<ItemOutDTO> search(String text, Integer from, Integer size) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return bookingEnrichment(itemRepository.search(text));
+        return bookingEnrichment(itemRepository.search(text, PageRequest.of(from / size, size)).getContent());
     }
 
     public List<ItemOutDTO> bookingEnrichment(List<Item> itemList) {

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDTO;
@@ -64,8 +65,6 @@ public class BookingServiceImpl implements BookingService {
                 throw new BookinglValidationException("Уже отменено");
             }
             booking.setStatus(BookingStatus.REJECTED);
-        } else {
-            throw new BookinglValidationException("Некорректный статус");
         }
         return bookingMapper.toOutDTO(bookingRepository.save(booking));
     }
@@ -82,7 +81,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingOutDTO> findByBookerAndState(Integer userId, String state) {
+    public List<BookingOutDTO> findByBookerAndState(Integer userId, String state, Integer from, Integer size) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("Пользователь " + userId + " не найден"));
         try {
@@ -90,11 +89,13 @@ public class BookingServiceImpl implements BookingService {
         } catch (IllegalArgumentException e) {
             throw new BookinglValidationException("Unknown state: UNSUPPORTED_STATUS");
         }
-        return bookingMapper.toListOutDTO(bookingRepository.findByBookerAndState(userId, state));
+        return bookingMapper.toListOutDTO(
+                bookingRepository
+                        .findByBookerAndState(userId, state, PageRequest.of(from / size, size)).getContent());
     }
 
     @Override
-    public List<BookingOutDTO> findByOwnerAndState(Integer userId, String state) {
+    public List<BookingOutDTO> findByOwnerAndState(Integer userId, String state, Integer from, Integer size) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("Пользователь " + userId + " не найден"));
         try {
@@ -102,6 +103,8 @@ public class BookingServiceImpl implements BookingService {
         } catch (IllegalArgumentException e) {
             throw new BookinglValidationException("Unknown state: UNSUPPORTED_STATUS");
         }
-        return bookingMapper.toListOutDTO(bookingRepository.findByOwnerAndState(userId, state));
+        return bookingMapper.toListOutDTO(
+                bookingRepository
+                        .findByOwnerAndState(userId, state, PageRequest.of(from / size, size)).getContent());
     }
 }

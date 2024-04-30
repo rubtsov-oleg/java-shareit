@@ -13,9 +13,9 @@ public interface ItemService {
 
     ItemOutDTO findById(Integer userId, Integer id);
 
-    List<ItemOutDTO> findAllByOwner(Integer id);
+    List<ItemOutDTO> findAllByOwner(Integer id, Integer from, Integer size);
 
-    List<ItemOutDTO> search(String text);
+    List<ItemOutDTO> search(String text, Integer from, Integer size);
 
     CommentDTO createComment(Integer userId, Integer itemId, CommentDTO commentDTO);
 }
