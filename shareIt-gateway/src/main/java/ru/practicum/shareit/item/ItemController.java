@@ -7,11 +7,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.anotation.MarkerOfCreate;
 import ru.practicum.shareit.anotation.MarkerOfUpdate;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
-
+import java.util.Collections;
 
 @Slf4j
 @Validated
@@ -57,6 +58,10 @@ public class ItemController {
                                          @RequestParam(defaultValue = "0") @Min(value = 0) Integer from,
                                          @RequestParam(defaultValue = "10") @Positive Integer size) {
         log.info("Получен запрос GET, на поиск вещей.");
+        if (StringUtils.isBlank(text)) {
+            log.info("Поисковый запрос пуст или null.");
+            return ResponseEntity.ok(Collections.emptyList());
+        }
         return itemClient.search(userId, text, from, size);
     }
 
