@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @RestControllerAdvice
